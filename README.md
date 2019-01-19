@@ -1,4 +1,4 @@
-> Work of November 2016.
+> Work of November, 2016.
 
 # Principais testes não paramétricos implementados no R, passo a passo.
 
