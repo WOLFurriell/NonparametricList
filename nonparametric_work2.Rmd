@@ -1,10 +1,10 @@
 ---
-title: 'Segundo trabalho de MÈtodos n„o-paramÈtricos: dados pareados'
+title: 'Segundo trabalho de M√©todos n√£o-param√©tricos: dados pareados'
 output: pdf_document
 ---
 
 ---
-Departamento de EstatÌstica 
+Departamento de Estat√≠stica 
 ---
 Wesley Furriel - RA:61493
 ------------------------------------------------------
@@ -27,35 +27,27 @@ library(adehabitatLT)
 
 **Pacotes utilizados**
 ------------------------------------------------------
-library(ggplot2)
+library(ggplot2); library(randtests); library(dplyr); library(signmedian.test); library(exact2x2)
 
-library(randtests)
-
-library(dplyr)
-
-library(signmedian.test)
-
-library(exact2x2)
-
-**ImplementaÁ„o dos testes**
+**Implementa√ß√£o dos testes**
 ------------------------------------------------------
 
-## Teste de aleatorizaÁ„o das iteraÁıes
+## Teste de aleatoriza√ß√£o das itera√ß√µes
 ```{r}
 # 1 para +
 # 0 para -
 
-iteracao<-function(sinal){
-posic<-c(1:length(sinal))
-tab<-as.data.frame(cbind(posic,sinal))
-tab<-tab%>%mutate(it=cumsum(ifelse(sinal != lag(sinal) | is.na(lag(sinal)),1,0)))
-r<-max(tab$it)
-n<-tab%>%group_by(sinal)%>%summarize("n"=length(sinal))%>%as.matrix()
-  tabF<-qruns(c(0.025,0.975), n[1,2], n[2,2], lower.tail = T)
-    if (r>=tabF[1] & r<=tabF[2]){
-      print("r de iteraÁıes n„o encontra-se na regi„o de rejeiÁ„o")
+iteracao <- function(sinal){
+posic    <- c(1:length(sinal))
+tab      < -as.data.frame(cbind(posic,sinal))
+tab      <- tab%>%mutate(it=cumsum(ifelse(sinal != lag(sinal) | is.na(lag(sinal)),1,0)))
+r        <- max(tab$it)
+n        <- tab%>%group_by(sinal)%>%summarize("n"=length(sinal))%>%as.matrix()
+  tabF <- qruns(c(0.025,0.975), n[1,2], n[2,2], lower.tail = T)
+    if (r >= tabF[1] & r <= tabF[2]){
+      print("r de itera√ß√µes n√£o encontra-se na regi√£o de rejei√ß√£o")
       print(paste(tabF[1],"<","( r =",r,") <",tabF[2],sep=" "))
-      }else{ print("r de iteraÁıes encontra-se na regi„o de rejeiÁ„o")
+      }else{ print("r de itera√ß√µes encontra-se na regi√£o de rejei√ß√£o")
             print(paste(tabF[1],"e",tabF[2],"/"," r =",r,sep=" "))}
 }
 ```
@@ -66,20 +58,20 @@ n<-tab%>%group_by(sinal)%>%summarize("n"=length(sinal))%>%as.matrix()
 # lado = 2: Unilateral a esquerda P(X<k)
 # lado = 3: Bilateral
 
-sinalteste<-function(x,mediana,lado){
-  med<-mediana
-  aux<-c()
-  sinal<-ifelse(x<med,aux<-1,aux<-0)
-  testesign<-cbind(x,sinal)%>%as.data.frame() 
-  nsign<-testesign%>%group_by(sinal)%>%summarize("n"=length(sinal))%>%as.matrix()
-  m<-length(x)
-    if(lado==1){
+sinalteste <- function(x,mediana,lado){
+  med <- mediana
+  aux <- c()
+  sinal <- ifelse(x<med,aux<-1,aux<-0)
+  testesign <- cbind(x,sinal)%>%as.data.frame() 
+  nsign <- testesign%>%group_by(sinal)%>%summarize("n"=length(sinal))%>%as.matrix()
+  m <- length(x)
+    if(lado == 1){
     sig<-round(pbinom(nsign[1,2],m,0.5),3)}
-      if(lado==3){
-      sig<-round(2*(1-pbinom(nsign[1,2],m,0.5)),3)}
-        if(lado==2){
-        sig<-round((1-pbinom(nsign[1,2],m,0.5)),3)}
-return(paste("valor.p =",sig,sep=" "))
+      if(lado == 3){
+      sig <- round(2*(1-pbinom(nsign[1,2],m,0.5)),3)}
+        if(lado == 2){
+        sig <- round((1-pbinom(nsign[1,2],m,0.5)),3)}
+return(paste("valor.p = ",sig,sep=" "))
 }
 ```
 
@@ -92,8 +84,8 @@ wilcoxon<-function(x,y){
   D.rank.sign <- D.rank*sign(D) 
   ranks.posivos <- sum(D.rank.sign[D.rank.sign > 0]) 
   ranks.negativos <- -sum(D.rank.sign[D.rank.sign < 0]) 
-  tc1<-ranks.posivos
-  tc2<-ranks.negativos
+  tc1 <- ranks.posivos
+  tc2 <- ranks.negativos
     if(length(x)<25){
     n<-length(D.rank)
     Tab.wilcox.li<-c(0,0,0,0,0,0,2,3,5,8,10,13,17,21,25,30,35,40,46,52)
@@ -113,12 +105,12 @@ wilcoxon<-function(x,y){
 }
 ```
   
-**ExercÌcio 9**
+**Exerc√≠cio 9**
 ------------------------------------------------------
 ***
 Teste dos sinais
 
-$H_0: M_d = 0$ - O gasto de energia em repouso È igual
+$H_0: M_d = 0$ - O gasto de energia em repouso √© igual
 
 $H_1: M_d \neq 0$ - O gasto de energia em repouso difere
 
@@ -135,16 +127,16 @@ signmedian.test(d,exact = TRUE)
 boxplot(x,y,col="gray")
 ```
 
-… possÌvel rejeitar $H_0$, dessa forma, h· diferenÁa entre a energia gasta em repouso para pacientes com fibrose cÌstica e para indivÌduos saud·veis
+√â poss√≠vel rejeitar $H_0$, dessa forma, h√° diferen√ßa entre a energia gasta em repouso para pacientes com fibrose c√≠stica e para indiv√≠duos saud√°veis
 pareados em idade, sexo, altura e peso.
 
-**ExercÌcio 13**
+**Exerc√≠cio 13**
 ------------------------------------------------------
 ***
 
-$H_0: d_{50} = 0$ Os gÍmeos tem o mesmo grau de agressividade 
+$H_0: d_{50} = 0$ Os g√™meos tem o mesmo grau de agressividade 
 
-$H_1: d_{50} > 0$ O primogÍnito apresenta maior grau de agressividade
+$H_1: d_{50} > 0$ O primog√™nito apresenta maior grau de agressividade
 
 ```{r,warning=FALSE}
 x<-c(89,71,77,68,91,72,77,91,70,71,88,87)
@@ -157,7 +149,7 @@ signmedian.test(d,alternative = "greater",exact = TRUE)
 #Teste de Wilcoxon
 wilcox.test(x,y,paired = T,alternative = "greater")
 
-#Teste de AleatorizaÁ„o
+#Teste de Aleatoriza√ß√£o
 sinal<-sign(d)
 sinal<-ifelse(sign(d)==1,aux<-1,aux<-0)
 iteracao(sinal)
@@ -168,16 +160,16 @@ iteracao(sinal)
 boxplot(x,y,col="gray")
 ```
 
-Verificamos que n„o È possÌvel rejeitamr $H_0$ para qualquer um dos testes empregados,ou seja todos apresentaram o mesmo comportamento, fato que reforÁa e demonstra que n„o h· evidÍncias de que o primogÍnito seja mais agressivo.
+Verificamos que n√£o √© poss√≠vel rejeitamr $H_0$ para qualquer um dos testes empregados,ou seja todos apresentaram o mesmo comportamento, fato que refor√ßa e demonstra que n√£o h√° evid√™ncias de que o primog√™nito seja mais agressivo.
 
-**ExercÌcio 14**
+**Exerc√≠cio 14**
 ------------------------------------------------------
 ***
 Teste Wilcoxon
 
-$H_0: d_{50} = 0$ N„o h· diferenÁas entre o estado normal e tenso na press„o sanguÌnea
+$H_0: d_{50} = 0$ N√£o h√° diferen√ßas entre o estado normal e tenso na press√£o sangu√≠nea
 
-$H_1: d_{50} > 0$ A press„o sanguÌnea È maior quando tenso
+$H_1: d_{50} > 0$ A press√£o sangu√≠nea √© maior quando tenso
 
 Sendo $n<25$
 ```{r,warning=FALSE}
@@ -193,14 +185,14 @@ wilcox.test(x,y)
 boxplot(x,y,col="gray")
 ```
 
-Desse modo n„o se rejeita $H_0$, ou seja, n„o h· diferenÁas entre o estado normal e tenso na press„o sanguÌnea
+Desse modo n√£o se rejeita $H_0$, ou seja, n√£o h√° diferen√ßas entre o estado normal e tenso na press√£o sangu√≠nea
 
-**ExercÌcio 15**
+**Exerc√≠cio 15**
 ------------------------------------------------------
 ***
 Teste Wilcoxon
 
-$H_0: d_{50} = 0$ N„o h· diferenÁas entre o peso dos gÍmeos 
+$H_0: d_{50} = 0$ N√£o h√° diferen√ßas entre o peso dos g√™meos 
 
 $H_1: d_{50} > 0$ O primeiro a nascer se desenvolve mais
 
@@ -218,17 +210,17 @@ wilcox.test(x,y,paired = T, alternative = "greater",correct = F)
 boxplot(x,y,col="gray")
 ```
 
-Desse modo se rejeita $H_0$, ou seja, h· diferenÁas entre o peso dos gÍmeos, nesse caso o primeiro a nascer se desenvolve mais. 
+Desse modo se rejeita $H_0$, ou seja, h√° diferen√ßas entre o peso dos g√™meos, nesse caso o primeiro a nascer se desenvolve mais. 
 
-**ExercÌcio 16**
+**Exerc√≠cio 16**
 ------------------------------------------------------
 ***
 Teste Wilcoxon
 
 
-$H_0: d_{50} = 0$ N„o h· diferenÁas entre o peso dos gÍmeos
+$H_0: d_{50} = 0$ N√£o h√° diferen√ßas entre o peso dos g√™meos
 
-$H_1: d_{50} > 0$ Existe diferenÁas entre o peso dos gÍmeos
+$H_1: d_{50} > 0$ Existe diferen√ßas entre o peso dos g√™meos
 
 Sendo $n>25$
 ```{r,warning=FALSE}
@@ -246,14 +238,14 @@ wilcox.test(x,y,paired = T)
 boxplot(x,y,col="gray")
 ```
 
-Dessa forma, rejeita-se $H_0$, ou seja, n„o h· diferenÁas entre o peso dos gÍmeos
+Dessa forma, rejeita-se $H_0$, ou seja, n√£o h√° diferen√ßas entre o peso dos g√™meos
 
-**ExercÌcio 17**
+**Exerc√≠cio 17**
 ------------------------------------------------------
 ***
 Teste Wilcoxon
 
-$H_0: d_{50} = 0$ N„o ocorreram melhoras
+$H_0: d_{50} = 0$ N√£o ocorreram melhoras
 
 $H_1: d_{50} < 0$ Ocorreram melhoras
 
@@ -271,4 +263,4 @@ wilcox.test(x,y,paired = T)
 boxplot(x,y,col="gray")
 ```
 
-Dessa forma, n„o È possÌvel rejeitar $H_0$, ou seja, n„o ocorreram melhoras nos escores de depress„o.
+Dessa forma, n√£o √© poss√≠vel rejeitar $H_0$, ou seja, n√£o ocorreram melhoras nos escores de depress√£o.
