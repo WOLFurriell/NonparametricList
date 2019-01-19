@@ -24,15 +24,7 @@ library(exact2x2)
 
 **Pacotes utilizados**
 ------------------------------------------------------
-library(ggplot2)
-
-library(randtests)
-
-library(dplyr)
-
-library(signmedian.test)
-
-library(exact2x2)
+library(ggplot2); library(randtests); library(dplyr); library(signmedian.test); library(exact2x2)
 
 **Implementação dos testes**
 ------------------------------------------------------
@@ -44,16 +36,16 @@ library(exact2x2)
 # lado = 3: Bilateral
 
 binomial <- function(n,x,p,lado) {
-  q<-1-p
+  q <- 1-p
   if (n > 25 & (n*p*q) > 8) {print("Aproxima pela normal")
-    z<-round((x-n*p)/sqrt(n*p*q),3)
+    z <- round((x-n*p)/sqrt(n*p*q),3)
     if (lado == 1){
-      sig<-round(1-pnorm(z,0,1),3)}
+      sig <- round(1-pnorm(z,0,1),3)}
       if (lado == 2){
-        sig<-round(pnorm(z,0,1),3)}
+        sig <- round(pnorm(z,0,1),3)}
         if (lado == 3){
-          z<-abs(z)
-          sig<-round(2*(1-pnorm(z,0,1)),3)}
+          z <- abs(z)
+          sig <- round(2*(1-pnorm(z,0,1)),3)}
     
     result<-paste("Z=",z," e ","valor-p=",sig,sep = "")
     return(result)
@@ -66,7 +58,7 @@ binomial <- function(n,x,p,lado) {
         if (lado == 3){
           sig<-round((2*pbinom(x,n,p)),3)}
           
-      result<-paste("valor.p=",sig,sep = "")
+      result <- paste("valor.p=",sig,sep = "")
       return(result)
       }
 }
@@ -88,15 +80,15 @@ quiquad<-function(a,b,c,d){
   X2<-sum((a-E)^2/E)}
   else{
     gl<-1
-    c.O<-matrix(c(a,b,c,d),2,2,byrow=T)
-    c<-rbind(c.O,colSums(c.O)) %>% cbind(c(rowSums(c.O),sum(c.O)))
-    E<-(c[3,c(1:2,2:1)]*c[c(1:2),3])/c[3,3]
-    c.E<-matrix(c(E[1],E[3],E[4],E[2]),2,2,byrow=T)
-    X2<-as.numeric(round(sum((c.O - c.E)^2/c.E),3))
+    c.O <- matrix(c(a,b,c,d),2,2,byrow=T)
+    c   <- rbind(c.O,colSums(c.O)) %>% cbind(c(rowSums(c.O),sum(c.O)))
+    E   <- (c[3,c(1:2,2:1)]*c[c(1:2),3])/c[3,3]
+    c.E <- matrix(c(E[1],E[3],E[4],E[2]),2,2,byrow=T)
+    X2  <- as.numeric(round(sum((c.O - c.E)^2/c.E),3))
     print(c)} 
-        X2T<-round(qchisq(0.95, df=gl, lower.tail=T),3)
-        sig<-round(pchisq(X2, df=gl, lower.tail=F),3) 
-        result<-paste("X2c=",X2,"X2=",X2T,"|","valor.p=",sig,sep = " ")
+        X2T <- round(qchisq(0.95, df=gl, lower.tail=T),3)
+        sig <- round(pchisq(X2, df=gl, lower.tail=F),3) 
+        result <- paste("X2c=",X2,"X2=",X2T,"|","valor.p=",sig,sep = " ")
         cat("\n")
         return(result)
 }
@@ -104,32 +96,32 @@ quiquad<-function(a,b,c,d){
 
 ## Teste de Kolmogorov-Smirnov
 ```{r}
-KS <-function(x,mu,sigma2){
-  fi<-x[,3]
-  n<-sum(fi)
-  mi<-(x[,1]+x[,2])/2
-if (sigma2==""){  
-  media<-sum(mi*fi)/n
-  S2<-round(sum((mi-media)^2*fi)/(n-1),3)
-  sigma2<-S2
+KS <- function(x,mu,sigma2){
+  fi <- x[,3]
+  n  <- sum(fi)
+  mi <- (x[,1]+x[,2])/2
+if (sigma2 == ""){  
+  media <- sum(mi*fi)/n
+  S2 <- round(sum((mi-media)^2*fi)/(n-1),3)
+  sigma2 <- S2
   print(paste("Variância estimada=",S2))}
-  if(mu==""){mu<-media
-  print(paste("Média estimada=",mu))} 
-    zi<-round((mi - mu)/sqrt(sigma2),3)
-    Fzi<-round(pnorm(zi,0,1),3)
-    Smi<-round(cumsum(fi)/n,3)
-    Di<-abs(Fzi-Smi)
-    tabela<-cbind(paste(li,"--",ls,sep = ""),f,zi,Fzi,Smi,Di)
+  if(mu == ""){mu <- media
+  print(paste("Média estimada = ", mu))} 
+    zi  <- round((mi - mu)/sqrt(sigma2),3)
+    Fzi <- round(pnorm(zi,0,1),3)
+    Smi <- round(cumsum(fi)/n,3)
+    Di  <- abs(Fzi-Smi)
+    tabela <- cbind(paste(li,"--",ls,sep = ""),f,zi,Fzi,Smi,Di)
       print(tabela)  
-      mDi<-round(max(Di),3)
-      teste<-ks.test(Di,"qnorm")
+      mDi <- round(max(Di),3)
+      teste <- ks.test(Di,"qnorm")
     if (n>35){
-    Dc<-round(1.36/ sqrt(n),3)}
+    Dc <- round(1.36/ sqrt(n),3)}
       else{
-      tabKS<-c(.975,.842,.708,.624,.565,.521,.486,.457,.482,.410,.391,.375,.361,
-               .349,.338,.328,.318,.309,.801,.294,.27,.24,.23)   
-      Dc<-tabKS[n]}   
-  result<-paste("W(0.95) = ",Dc,"  vs  ","max|F(zi)-S(mi)|=",mDi,sep = "")
+      tabKS <- c(.975,.842,.708,.624,.565,.521,.486,.457,.482,.410,.391,.375,.361,
+                 .349,.338,.328,.318,.309,.801,.294,.27,.24,.23)   
+      Dc <- tabKS[n]}   
+  result <- paste("W(0.95) = ",Dc,"  vs  ","max|F(zi)-S(mi)|=",mDi,sep = "")
   return(result)
 }
 ```
@@ -140,12 +132,12 @@ if (sigma2==""){
 # 0 para -
 
 iteracao<-function(sinal){
-posic<-c(1:length(sinal))
-tab<-as.data.frame(cbind(posic,sinal))
-tab<-tab%>%mutate(it=cumsum(ifelse(sinal != lag(sinal) | is.na(lag(sinal)),1,0)))
-r<-max(tab$it)
-n<-tab%>%group_by(sinal)%>%summarize("n"=length(sinal))%>%as.matrix()
-  tabF<-qruns(c(0.025,0.975), n[1,2], n[2,2], lower.tail = T)
+posic <- c(1:length(sinal))
+tab   <- as.data.frame(cbind(posic,sinal))
+tab   <- tab%>%mutate(it=cumsum(ifelse(sinal != lag(sinal) | is.na(lag(sinal)),1,0)))
+r     <- max(tab$it)
+n <- tab%>%group_by(sinal)%>%summarize("n" = length(sinal)) %>% as.matrix()
+  tabF <- qruns(c(0.025,0.975), n[1,2], n[2,2], lower.tail = T)
     if (r>=tabF[1] & r<=tabF[2]){
       print("r de iterações não encontra-se na região de rejeição")
       print(paste(tabF[1],"<","( r =",r,") <",tabF[2],sep=" "))
@@ -160,20 +152,20 @@ n<-tab%>%group_by(sinal)%>%summarize("n"=length(sinal))%>%as.matrix()
 # lado = 2: Unilateral a esquerda P(X<k)
 # lado = 3: Bilateral
 
-sinalteste<-function(x,mediana,lado){
-  med<-mediana
-  aux<-c()
-  sinal<-ifelse(x<med,aux<-1,aux<-0)
-  testesign<-cbind(x,sinal)%>%as.data.frame() 
-  nsign<-testesign%>%group_by(sinal)%>%summarize("n"=length(sinal))%>%as.matrix()
-  m<-length(x)
-    if(lado==1){
+sinalteste <- function(x,mediana,lado){
+  med <- mediana
+  aux <- c()
+  sinal <- ifelse(x<med,aux<-1,aux<-0)
+  testesign <- cbind(x,sinal)%>%as.data.frame() 
+  nsign <- testesign %>% group_by(sinal) %>% summarize("n" = length(sinal)) %>% as.matrix()
+  m <- length(x)
+    if(lado == 1){
     sig<-round(pbinom(nsign[1,2],m,0.5),3)}
-      if(lado==3){
+      if(lado == 3){
       sig<-round(2*(1-pbinom(nsign[1,2],m,0.5)),3)}
-        if(lado==2){
-        sig<-round((1-pbinom(nsign[1,2],m,0.5)),3)}
-return(paste("valor.p =",sig,sep=" "))
+        if(lado == 2){
+        sig <- round((1-pbinom(nsign[1,2],m,0.5)),3)}
+return(paste("valor.p = ",sig,sep=" "))
 }
 ```
 
