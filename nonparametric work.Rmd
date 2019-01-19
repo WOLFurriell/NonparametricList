@@ -1,8 +1,8 @@
 ---
-title: "Trabalho de MÈtodos n„o-paramÈtricos"
+title: "Trabalho de M√©todos n√£o param√©tricos"
 output: pdf_document
 ---
-Departamento de EstatÌstica 
+Departamento de Estat√≠stica 
 ---
 Wesley Furriel - RA:61493
 ------------------------------------------------------
@@ -34,7 +34,7 @@ library(signmedian.test)
 
 library(exact2x2)
 
-**ImplementaÁ„o dos testes**
+**Implementa√ß√£o dos testes**
 ------------------------------------------------------
 
 ## Teste Binomial
@@ -58,7 +58,7 @@ binomial <- function(n,x,p,lado) {
     result<-paste("Z=",z," e ","valor-p=",sig,sep = "")
     return(result)
   }
-  else {print("N„o aproxima pela normal")
+  else {print("N√£o aproxima pela normal")
     if (lado == 1){
     sig<-round(1-pbinom(x,n,p),3)}
       if (lado == 2){
@@ -74,7 +74,7 @@ binomial <- function(n,x,p,lado) {
 
 ## Teste qui-quadrado
 ```{r}
-# Caso Tabela de contingÍncia 2x2
+# Caso Tabela de conting√™ncia 2x2
 # \ a  b \
 # \ c  d \
 # Caso rol de dados
@@ -112,9 +112,9 @@ if (sigma2==""){
   media<-sum(mi*fi)/n
   S2<-round(sum((mi-media)^2*fi)/(n-1),3)
   sigma2<-S2
-  print(paste("Vari‚ncia estimada=",S2))}
+  print(paste("Vari√¢ncia estimada=",S2))}
   if(mu==""){mu<-media
-  print(paste("MÈdia estimada=",mu))} 
+  print(paste("M√©dia estimada=",mu))} 
     zi<-round((mi - mu)/sqrt(sigma2),3)
     Fzi<-round(pnorm(zi,0,1),3)
     Smi<-round(cumsum(fi)/n,3)
@@ -134,7 +134,7 @@ if (sigma2==""){
 }
 ```
 
-## Teste de aleatorizaÁ„o das iteraÁıes
+## Teste de aleatoriza√ß√£o das itera√ß√µes
 ```{r}
 # 1 para +
 # 0 para -
@@ -147,9 +147,9 @@ r<-max(tab$it)
 n<-tab%>%group_by(sinal)%>%summarize("n"=length(sinal))%>%as.matrix()
   tabF<-qruns(c(0.025,0.975), n[1,2], n[2,2], lower.tail = T)
     if (r>=tabF[1] & r<=tabF[2]){
-      print("r de iteraÁıes n„o encontra-se na regi„o de rejeiÁ„o")
+      print("r de itera√ß√µes n√£o encontra-se na regi√£o de rejei√ß√£o")
       print(paste(tabF[1],"<","( r =",r,") <",tabF[2],sep=" "))
-      }else{ print("r de iteraÁıes encontra-se na regi„o de rejeiÁ„o")
+      }else{ print("r de itera√ß√µes encontra-se na regi√£o de rejei√ß√£o")
             print(paste(tabF[1],"e",tabF[2],"/"," r =",r,sep=" "))}
 }
 ```
@@ -179,7 +179,7 @@ return(paste("valor.p =",sig,sep=" "))
 
 ## Teste de McNemar
 ```{r}
-# Tabela de contingÍncia 2x2
+# Tabela de conting√™ncia 2x2
 # \ a  b \
 # \ c  d \
 
@@ -228,15 +228,15 @@ wilcoxon<-function(x,y){
 }
 ```
 
-**ExercÌcio 1**
+**Exerc√≠cio 1**
 ------------------------------------------------------
 ***
 Teste Binomial  
 
-$H_0: p = 0.3$ - a proporÁ„o de pacientes na populaÁ„o com estas caracterÌsticas È 
+$H_0: p = 0.3$ - a propor√ß√£o de pacientes na popula√ß√£o com estas caracter√≠sticas √© 
 igual a 0.30
 
-$H_1: p > 0.3$ - a proporÁ„o de pacientes na populaÁ„o com estas caracterÌsticas È superior a 0.30
+$H_1: p > 0.3$ - a propor√ß√£o de pacientes na popula√ß√£o com estas caracter√≠sticas √© superior a 0.30
 
 * Para $p_0 = 0.3$, $n = 20$, $x = 11$  e  $\alpha = 0.05$
 ```{r}
@@ -244,7 +244,7 @@ binomial(n=20,x=11,p=0.3,lado=1)
 # Conferindo
 prop.test(11, n=20, p=0.3, alternative=c("greater"),conf.level=0.95)
 ```
-Rejeitamos $H_0$, pois $valor.p < \alpha$, ou seja, a proporÁ„o de pacientes com "fundo de olho" È superior a 0.3.
+Rejeitamos $H_0$, pois $valor.p < \alpha$, ou seja, a propor√ß√£o de pacientes com "fundo de olho" √© superior a 0.3.
 
 * Para $p_0 = 0.3$, $n = 45$, $x = 17$ e $\alpha = 0.05$,
 sendo $n>25$ e $npq \ge 9$
@@ -253,65 +253,65 @@ binomial(n=45,x=17,p=0.3,lado=1)
 # Conferindo
 prop.test(17, n=45, p=0.3, alternative=c("greater"),conf.level=0.95)
 ```
-Desse modo n„o rejeitamos $H_0$, pois $valor.p > \alpha$.
+Desse modo n√£o rejeitamos $H_0$, pois $valor.p > \alpha$.
 
-**ExercÌcio 2**
+**Exerc√≠cio 2**
 ------------------------------------------------------
 ***
 Teste Binomial  
 
-$H_0: p = 0.75$ Temos que 75% dos genes observado s„o dominantes
+$H_0: p = 0.75$ Temos que 75% dos genes observado s√£o dominantes
 
-$H_1: p \neq 0.75$ Temos que os genes dominantes observados s„o diferentes de 75%
+$H_1: p \neq 0.75$ Temos que os genes dominantes observados s√£o diferentes de 75%
 
 * Para $p_0 = 0.75$, $n = 80$, $x = 54$ e $\alpha = 0.05$,
 sendo $n>25$ e $npq \ge 9$
 ```{r}
 binomial(n=80,x=54,p=0.75,lado=3)
 ```
-Desse modo n„o rejeitamos $H_0$, pois $valor.p > \alpha$. Ou seja, a lei se aplica ao experimento realizado
+Desse modo n√£o rejeitamos $H_0$, pois $valor.p > \alpha$. Ou seja, a lei se aplica ao experimento realizado
 
-**ExercÌcio 3**
+**Exerc√≠cio 3**
 ------------------------------------------------------
 ***
 Teste Binomial  
 
-$H_0: p = 0.20$; 20% dos insetos do ambiente selecionado possuem a caracterÌstica A 
+$H_0: p = 0.20$; 20% dos insetos do ambiente selecionado possuem a caracter√≠stica A 
 
-$H_1: p \neq 0.20$;  N„o confirmamos que 20% dos insetos do ambiente selecionado possuem a caractÈtica A
+$H_1: p \neq 0.20$;  N√£o confirmamos que 20% dos insetos do ambiente selecionado possuem a caract√©tica A
 
 * Para $p_0 = 0.20$, $n = 18$, $x = 0$ e $\alpha = 0.05$,
 
 ```{r}
 binomial(n=18,x=0,p=0.20,lado=3)
 ```
-Rejeitamos $H_0$, pois $valor.p < \alpha$, ou seja, n„o È possÌvel confirmar que 20% dos insetos do ambiente selecionado possuem a caracterÌstica A.
+Rejeitamos $H_0$, pois $valor.p < \alpha$, ou seja, n√£o √© poss√≠vel confirmar que 20% dos insetos do ambiente selecionado possuem a caracter√≠stica A.
 
-**ExercÌcio 4**
+**Exerc√≠cio 4**
 ------------------------------------------------------
 ***
 Teste Binomial  
 
-$H_0: p = \frac{1}{6}$; O dado È honesto 
+$H_0: p = \frac{1}{6}$; O dado √© honesto 
 
-$H_1: p \neq \frac{1}{6}$;  O dado n„o È honesto
+$H_1: p \neq \frac{1}{6}$;  O dado n√£o √© honesto
 
 * Para $p_0 = \frac{1}{6}$, $n = 180$, $x = 38$ e $\alpha = 0.05$,
 sendo $n>25$ e $npq \ge 9$
 ```{r}
 binomial(n=180,x=38,p=0.166,lado=3)
 ```
-Assim n„o rejeitamos $H_0$, sendo o dados honesto.
+Assim n√£o rejeitamos $H_0$, sendo o dados honesto.
 
 
-**ExercÌcio 5**
+**Exerc√≠cio 5**
 ------------------------------------------------------
 ***
 Teste dos sinais
 
-$H_0: M_d = 103$ Mediana È igual a 103
+$H_0: M_d = 103$ Mediana √© igual a 103
 
-$H_1: M_d \neq 103$ A mediana È diferente
+$H_1: M_d \neq 103$ A mediana √© diferente
 
 ```{r}
 x<-c(142,134,98,119,131,86,119,161,144,158,103,154,122,93,137,165,81,117,128,103)
@@ -320,16 +320,16 @@ sinalteste(x,mediana=103,lado=3)
 #conferindo
 signmedian.test(x,alternative = "two.sided",exact=TRUE)
 ```
-Rejeitamos a hipÛtese nula, com 95% de confianÁa, pode dizer que a altura mediana È difente de 103.
+Rejeitamos a hip√≥tese nula, com 95% de confian√ßa, pode dizer que a altura mediana √© difente de 103.
 
-**ExercÌcio 6**
+**Exerc√≠cio 6**
 ------------------------------------------------------
 ***
 Teste qui-quadrado
 
-$H_0: f_1 = f_2 = ...$; N„o h· diferenÁas entre o n˙mero esperado
+$H_0: f_1 = f_2 = ...$; N√£o h√° diferen√ßas entre o n√∫mero esperado
 
-$H_1: f_1 \neq f_2 \neq ...$; H· diferenÁas
+$H_1: f_1 \neq f_2 \neq ...$; H√° diferen√ßas
 
 Sendo, $\alpha_1 = 0.05$  e  $\alpha_2 = 0.025$  
 ```{r}
@@ -339,16 +339,16 @@ quiquad(a,"","","")
 chisq.test(a)
 ```
 
-N„o rejeitamos $H_0$ para $\alpha_1  e  \alpha_2$, pois valor.p se mostra maior em ambos os casos, dessa forma, concluÌmos que n„o h· difsrenÁa significativa nos valores esperados.
+N√£o rejeitamos $H_0$ para $\alpha_1  e  \alpha_2$, pois valor.p se mostra maior em ambos os casos, dessa forma, conclu√≠mos que n√£o h√° difsren√ßa significativa nos valores esperados.
 
-**ExercÌcio 7**
+**Exerc√≠cio 7**
 ------------------------------------------------------
 ***
 Teste KS
 
-$H_0: \mu = 3600  \ e \ \sigma^2 = 3000000$ - Segue uma dist. Normal com esses par‚metros
+$H_0: \mu = 3600  \ e \ \sigma^2 = 3000000$ - Segue uma dist. Normal com esses par√¢metros
 
-$H_1: \mu \neq 3600 \ e \ \sigma^2 \neq 3000000$ - N„o segue uma dist. Normal com esses par‚metros
+$H_1: \mu \neq 3600 \ e \ \sigma^2 \neq 3000000$ - N√£o segue uma dist. Normal com esses par√¢metros
 
 ```{r}
 li<-c(2700,3000,3300,3600,3900,4200)
@@ -359,7 +359,7 @@ dados<-cbind(li,ls,f)
 KS(dados,3600,3000000)
 ```
 
-Assim, rejeitamos $H_0$, pois $W_{(0.95)} < max|F(zi)-S(mi)|$ e portanto n„o podemos dizer que a produÁ„o mÈdia de milho adubado segue a distribuiÁ„o normal
+Assim, rejeitamos $H_0$, pois $W_{(0.95)} < max|F(zi)-S(mi)|$ e portanto n√£o podemos dizer que a produ√ß√£o m√©dia de milho adubado segue a distribui√ß√£o normal
 
 ```{r, echo=FALSE}
 aux<-rep((li+ls)/2,f)
@@ -367,14 +367,14 @@ graf<-as.data.frame(aux)
 ggplot(graf,aes(factor(aux)))+geom_bar(width=1,col="white")
 ```
 
-**ExercÌcio 8**
+**Exerc√≠cio 8**
 ------------------------------------------------------
 ***
 Teste qui-quadrado
 
-$H_0: f_1 = f_2 = ...$; N„o h· diferenÁas entre o n˙mero esperado
+$H_0: f_1 = f_2 = ...$; N√£o h√° diferen√ßas entre o n√∫mero esperado
 
-$H_1: f_1 \neq f_2 \neq ...$; H· diferenÁas
+$H_1: f_1 \neq f_2 \neq ...$; H√° diferen√ßas
 
 Sendo, $\alpha_1 = 0.05$  
 ```{r}
@@ -383,16 +383,16 @@ quiquad(a,"","","")
 # Conferindo o resultado
 chisq.test(a)
 ```
-Rejeitamos $H_0$, pois $valor.p < \alpha$, ou seja, temos motivos para suspeitar que as moedas n„o s„o equilibradas.
+Rejeitamos $H_0$, pois $valor.p < \alpha$, ou seja, temos motivos para suspeitar que as moedas n√£o s√£o equilibradas.
 
-**ExercÌcio 9**
+**Exerc√≠cio 9**
 ------------------------------------------------------
 ***
 Teste KS
 
-$H_0: \mu = 10$ - Segue uma dist. Normal com esses par‚metros
+$H_0: \mu = 10$ - Segue uma dist. Normal com esses par√¢metros
 
-$H_1: \mu \neq 10$ - N„o segue uma dist. Normal com esses par‚metros
+$H_1: \mu \neq 10$ - N√£o segue uma dist. Normal com esses par√¢metros
 
 * Para $\mu = 10$  e  $\sigma^2 = ?$ 
 ```{r}
@@ -403,13 +403,13 @@ dados<-cbind(li,ls,f)
 
 KS(dados,mu=10,sigma2="")
 ```
-Como $W_{(0.95)} > max|F(zi)-S(mi)|$ n„o rejeitamos $H_0$, portanto, segue uma dist. Normal com $\mu = 10$ par‚metros
+Como $W_{(0.95)} > max|F(zi)-S(mi)|$ n√£o rejeitamos $H_0$, portanto, segue uma dist. Normal com $\mu = 10$ par√¢metros
 
 * Para $\mu = ?$  e  $\sigma^2 = ?$
 ```{r}
 KS(dados,mu="",sigma2="")
 ```
-Como $W_{(0.95)} < max|F(zi)-S(mi)|$ rejeitamos $H_0$, portanto, n„o segue uma dist. Normal quando estimamos $\mu$  e $\sigma^2$
+Como $W_{(0.95)} < max|F(zi)-S(mi)|$ rejeitamos $H_0$, portanto, n√£o segue uma dist. Normal quando estimamos $\mu$  e $\sigma^2$
 
 ```{r, echo=FALSE}
 aux<-rep((li+ls)/2,f)
@@ -417,14 +417,14 @@ graf<-as.data.frame(aux)
 ggplot(graf,aes(factor(aux)))+geom_bar(width=1,col="white")
 ```
 
-**ExercÌcio 10**
+**Exerc√≠cio 10**
 ------------------------------------------------------
 ***
-Teste de AleatorizaÁ„o das IteraÁıes
+Teste de Aleatoriza√ß√£o das Itera√ß√µes
 
-$H_0:$ Os escores ocorrem de forma aleatÛria
+$H_0:$ Os escores ocorrem de forma aleat√≥ria
 
-$H_1:$ Os escores n„o ocorrem de forma aleatÛria
+$H_1:$ Os escores n√£o ocorrem de forma aleat√≥ria
 
 * Sendo $n_1 \ e \ n_2< 20$ 
 ```{r}
@@ -432,16 +432,16 @@ sinal<-c(1,1,0,1,0,1,1,1,0,0,1,0,0,0,0,1,0,1,0,0,0,1,1,1,0,0,1,1,1,0)
 
 iteracao(sinal)
 ```
-Desse modo n„o rejeitamos $H_0$, ou seja, os dados parecem ter sido gerados de forma aleatÛria.
+Desse modo n√£o rejeitamos $H_0$, ou seja, os dados parecem ter sido gerados de forma aleat√≥ria.
 
-**ExercÌcio 11**
+**Exerc√≠cio 11**
 ------------------------------------------------------
 ***
 Teste dos sinais
 
-$H_0: M_d = 98.5$ Mediana È igual a 98.5
+$H_0: M_d = 98.5$ Mediana √© igual a 98.5
 
-$H_1: M_d < 98.5$ A mediana È menor que este valor
+$H_1: M_d < 98.5$ A mediana √© menor que este valor
 
 * Para $n \le 25$ temos
 ```{r}
@@ -452,9 +452,9 @@ sinalteste(x,mediana = 98.5,lado=1)
 #Conferindo os resultados
 binom.test(3,15,alternative = c("less"))
 ```
-Rejeitamos a hipÛtese nula, com 95% de confianÁa podemos dizer que a mediana È menor que 98.5.
+Rejeitamos a hip√≥tese nula, com 95% de confian√ßa podemos dizer que a mediana √© menor que 98.5.
 
-**ExercÌcio 12**
+**Exerc√≠cio 12**
 ------------------------------------------------------
 ***
 Teste de McNemar
@@ -470,9 +470,9 @@ McNemar(116,24,48,212)
 exact2x2(as.data.frame(matrix(c(116,24,48,212),2,2,byrow =T)),
          alternative=c("greater"))
 ```
-Rejeitamos $H_0$, sendo $T_1 > X^2$, desse modo, parece que houve alguma conscientizaÁ„o dos funcion·rios acerca do divÛrcio.
+Rejeitamos $H_0$, sendo $T_1 > X^2$, desse modo, parece que houve alguma conscientiza√ß√£o dos funcion√°rios acerca do div√≥rcio.
 
-**ExercÌcio 13**
+**Exerc√≠cio 13**
 ------------------------------------------------------
 ***
 Teste de McNemar
@@ -491,16 +491,16 @@ exact2x2(as.data.frame(matrix(c(20,30,90,60),2,2,byrow =T)),
 ```
 Rejeitamos $H_0$, sendo $T_1 > X^2$, desse modo, parece que a campanha foi eficiente.
 
-**ExercÌcio 14**
+**Exerc√≠cio 14**
 ------------------------------------------------------
 ***
 Teste qui-quadrado
 
 Teste McNemar
 
-$H_0:$ A proporÁ„o de esposas È a mesma da de maridos
+$H_0:$ A propor√ß√£o de esposas √© a mesma da de maridos
 
-$H_1:$ A proporÁ„o È diferente
+$H_1:$ A propor√ß√£o √© diferente
 
 ```{r}
 ### VERIFICAR
@@ -513,16 +513,16 @@ exact2x2(as.data.frame(matrix(c(34,6,19,16),2,2,byrow =T)),
          alternative=c("two.sided"))
 ```
 
-Para ambos os teste È possÌvel rejeitar $H_0$, ou seja, a proporÁ„o de esposas que responderam sim È diferente da dos maridos.
+Para ambos os teste √© poss√≠vel rejeitar $H_0$, ou seja, a propor√ß√£o de esposas que responderam sim √© diferente da dos maridos.
 
-**ExercÌcio 15**
+**Exerc√≠cio 15**
 ------------------------------------------------------
 ***
 Teste Wilcoxon
 
-$H_0: d_{50} = 0$ N„o h· diferenÁas entre o estado normal e tenso na press„o sanguÌnea
+$H_0: d_{50} = 0$ N√£o h√° diferen√ßas entre o estado normal e tenso na press√£o sangu√≠nea
 
-$H_1: d_{50} > 0$ A press„o sanguÌnea È maior quando tenso
+$H_1: d_{50} > 0$ A press√£o sangu√≠nea √© maior quando tenso
 
 Sendo $n<25$
 ```{r,warning=FALSE}
@@ -538,14 +538,14 @@ wilcox.test(x,y)
 boxplot(x,y,col="gray")
 ```
 
-Desse modo n„o se rejeita $H_0$, ou seja, n„o h· diferenÁas entre o estado normal e tenso na press„o sanguÌnea
+Desse modo n√£o se rejeita $H_0$, ou seja, n√£o h√° diferen√ßas entre o estado normal e tenso na press√£o sangu√≠nea
 
-**ExercÌcio 16**
+**Exerc√≠cio 16**
 ------------------------------------------------------
 ***
 Teste Wilcoxon
 
-$H_0: d_{50} = 0$ N„o h· diferenÁas entre o peso dos gÍmeos 
+$H_0: d_{50} = 0$ N√£o h√° diferen√ßas entre o peso dos g√™meos 
 
 $H_1: d_{50} > 0$ O primeiro a nascer se desenvolve mais
 
@@ -563,16 +563,16 @@ wilcox.test(x,y,paired = T, alternative = "greater",correct = F)
 boxplot(x,y,col="gray")
 ```
 
-Desse modo se rejeita $H_0$, ou seja, h· diferenÁas entre o peso dos gÍmeos, nesse caso o primeiro a nascer se desenvolve mais. 
+Desse modo se rejeita $H_0$, ou seja, h√° diferen√ßas entre o peso dos g√™meos, nesse caso o primeiro a nascer se desenvolve mais. 
 
-**ExercÌcio 17**
+**Exerc√≠cio 17**
 ------------------------------------------------------
 ***
 Teste Wilcoxon
 
-$H_0: d_{50} = 0$ N„o h· diferenÁas entre o peso dos gÍmeos
+$H_0: d_{50} = 0$ N√£o h√° diferen√ßas entre o peso dos g√™meos
 
-$H_1: d_{50} > 0$ Existe diferenÁas entre o peso dos gÍmeos
+$H_1: d_{50} > 0$ Existe diferen√ßas entre o peso dos g√™meos
 
 Sendo $n>25$
 ```{r,warning=FALSE}
@@ -590,15 +590,15 @@ wilcox.test(x,y,paired = T)
 boxplot(x,y,col="gray")
 ```
 
-Dessa forma, rejeita-se $H_0$, ou seja, n„o h· diferenÁas entre o peso dos gÍmeos
+Dessa forma, rejeita-se $H_0$, ou seja, n√£o h√° diferen√ßas entre o peso dos g√™meos
 
-**ExercÌcio 18**
+**Exerc√≠cio 18**
 ------------------------------------------------------
 ***
 
-$H_0: d_{50} = 0$ Os gÍmeos tem o mesmo grau de agressividade 
+$H_0: d_{50} = 0$ Os g√™meos tem o mesmo grau de agressividade 
 
-$H_1: d_{50} > 0$ O primogÍnito apresenta maior grau de agressividade
+$H_1: d_{50} > 0$ O primog√™nito apresenta maior grau de agressividade
 
 ```{r,warning=FALSE}
 x<-c(89,71,77,68,91,72,77,91,70,71,88,87)
@@ -611,7 +611,7 @@ signmedian.test(d,alternative = "greater",exact = TRUE)
 #Teste de Wilcoxon
 wilcox.test(x,y,paired = T,alternative = "greater")
 
-#Teste de AleatorizaÁ„o
+#Teste de Aleatoriza√ß√£o
 sinal<-sign(d)
 sinal<-ifelse(sign(d)==1,aux<-1,aux<-0)
 iteracao(sinal)
@@ -622,6 +622,6 @@ iteracao(sinal)
 boxplot(x,y,col="gray")
 ```
 
-Verificamos que n„o È possÌvel rejeitamr $H_0$ para qualquer um dos testes empregados,ou seja todos apresentaram o mesmo comportamento, fato que reforÁa e demonstra que n„o h· evidÍncias de que o primogÍnito seja mais agressivo.
+Verificamos que n√£o √© poss√≠vel rejeitamr $H_0$ para qualquer um dos testes empregados,ou seja todos apresentaram o mesmo comportamento, fato que refor√ßa e demonstra que n√£o h√° evid√™ncias de que o primog√™nito seja mais agressivo.
 
 
