@@ -1,0 +1,274 @@
+---
+title: 'Segundo trabalho de Métodos não-paramétricos: dados pareados'
+output: pdf_document
+---
+
+---
+Departamento de Estatística 
+---
+Wesley Furriel - RA:61493
+------------------------------------------------------
+***
+Prof. Carlos Ap. dos Santos
+------------------------------------------------------
+***
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#pacotes
+rm(list=ls())
+library(ggplot2)
+library(randtests)
+library(dplyr)
+library(signmedian.test)
+library(exact2x2)
+library(adehabitatLT)
+```
+
+**Pacotes utilizados**
+------------------------------------------------------
+library(ggplot2)
+
+library(randtests)
+
+library(dplyr)
+
+library(signmedian.test)
+
+library(exact2x2)
+
+**Implementação dos testes**
+------------------------------------------------------
+
+## Teste de aleatorização das iterações
+```{r}
+# 1 para +
+# 0 para -
+
+iteracao<-function(sinal){
+posic<-c(1:length(sinal))
+tab<-as.data.frame(cbind(posic,sinal))
+tab<-tab%>%mutate(it=cumsum(ifelse(sinal != lag(sinal) | is.na(lag(sinal)),1,0)))
+r<-max(tab$it)
+n<-tab%>%group_by(sinal)%>%summarize("n"=length(sinal))%>%as.matrix()
+  tabF<-qruns(c(0.025,0.975), n[1,2], n[2,2], lower.tail = T)
+    if (r>=tabF[1] & r<=tabF[2]){
+      print("r de iterações não encontra-se na região de rejeição")
+      print(paste(tabF[1],"<","( r =",r,") <",tabF[2],sep=" "))
+      }else{ print("r de iterações encontra-se na região de rejeição")
+            print(paste(tabF[1],"e",tabF[2],"/"," r =",r,sep=" "))}
+}
+```
+
+## Teste dos sinais
+```{r}
+# lado = 1: Unilateral a direita P(X>k)
+# lado = 2: Unilateral a esquerda P(X<k)
+# lado = 3: Bilateral
+
+sinalteste<-function(x,mediana,lado){
+  med<-mediana
+  aux<-c()
+  sinal<-ifelse(x<med,aux<-1,aux<-0)
+  testesign<-cbind(x,sinal)%>%as.data.frame() 
+  nsign<-testesign%>%group_by(sinal)%>%summarize("n"=length(sinal))%>%as.matrix()
+  m<-length(x)
+    if(lado==1){
+    sig<-round(pbinom(nsign[1,2],m,0.5),3)}
+      if(lado==3){
+      sig<-round(2*(1-pbinom(nsign[1,2],m,0.5)),3)}
+        if(lado==2){
+        sig<-round((1-pbinom(nsign[1,2],m,0.5)),3)}
+return(paste("valor.p =",sig,sep=" "))
+}
+```
+
+## Teste de Wilcoxon
+```{r}
+wilcoxon<-function(x,y){
+  D <- c(x - y) 
+  D <- D[D!=0] 
+  D.rank <-rank(abs(D)) 
+  D.rank.sign <- D.rank*sign(D) 
+  ranks.posivos <- sum(D.rank.sign[D.rank.sign > 0]) 
+  ranks.negativos <- -sum(D.rank.sign[D.rank.sign < 0]) 
+  tc1<-ranks.posivos
+  tc2<-ranks.negativos
+    if(length(x)<25){
+    n<-length(D.rank)
+    Tab.wilcox.li<-c(0,0,0,0,0,0,2,3,5,8,10,13,17,21,25,30,35,40,46,52)
+    Tab.wilcox.ls<-c(0,0,0,0,0,21,26,33,40,47,56,65,74,84,95)
+    Twli<-Tab.wilcox.li[n];Twls<-Tab.wilcox.ls[n]
+    result<-paste("Tc+ =",tc1,"  Tc- =",tc2," | ","Ttab -> ( LI = ",Twli,", LS = ",
+    Twls,")",sep="")}
+      else{
+        n<-length(x)
+        mi<-(n*(n+1))/4
+        sigma<-sqrt(((n*(n+1))*(2*n+1))/24)
+        Zw<-round((tc1-mi)/sigma,3)
+        sig<-round(pnorm(Zw,0,1),8)
+        result<-paste("Tc+ =",tc1," Tc- =",tc2," | ","Zw =",Zw," e ",
+        "sig = ",sig,sep=" ")}
+  return(result)
+}
+```
+  
+**Exercício 9**
+------------------------------------------------------
+***
+Teste dos sinais
+
+$H_0: M_d = 0$ - O gasto de energia em repouso é igual
+
+$H_1: M_d \neq 0$ - O gasto de energia em repouso difere
+
+```{r,warning=FALSE}
+x<-c(1153,1132,1165,1460,1630,1493,1358,1453,1185,1824,1793,1930,2075)
+y<-c(996,1080,1182,1452,1162,1619,1140,1123,1113,1463,1632,1614,1836)
+
+#Teste do sinal
+d<-x-y;d
+signmedian.test(d,exact = TRUE)
+```
+
+```{r, echo=FALSE}
+boxplot(x,y,col="gray")
+```
+
+É possível rejeitar $H_0$, dessa forma, há diferença entre a energia gasta em repouso para pacientes com fibrose cística e para indivíduos saudáveis
+pareados em idade, sexo, altura e peso.
+
+**Exercício 13**
+------------------------------------------------------
+***
+
+$H_0: d_{50} = 0$ Os gêmeos tem o mesmo grau de agressividade 
+
+$H_1: d_{50} > 0$ O primogênito apresenta maior grau de agressividade
+
+```{r,warning=FALSE}
+x<-c(89,71,77,68,91,72,77,91,70,71,88,87)
+y<-c(88,77,76,64,96,72,65,90,65,80,81,72)
+
+#Teste do sinal
+d<-y-x;d
+signmedian.test(d,alternative = "greater",exact = TRUE)
+
+#Teste de Wilcoxon
+wilcox.test(x,y,paired = T,alternative = "greater")
+
+#Teste de Aleatorização
+sinal<-sign(d)
+sinal<-ifelse(sign(d)==1,aux<-1,aux<-0)
+iteracao(sinal)
+
+```
+
+```{r, echo=FALSE}
+boxplot(x,y,col="gray")
+```
+
+Verificamos que não é possível rejeitamr $H_0$ para qualquer um dos testes empregados,ou seja todos apresentaram o mesmo comportamento, fato que reforça e demonstra que não há evidências de que o primogênito seja mais agressivo.
+
+**Exercício 14**
+------------------------------------------------------
+***
+Teste Wilcoxon
+
+$H_0: d_{50} = 0$ Não há diferenças entre o estado normal e tenso na pressão sanguínea
+
+$H_1: d_{50} > 0$ A pressão sanguínea é maior quando tenso
+
+Sendo $n<25$
+```{r,warning=FALSE}
+x<-c(126,117,115,118,121,128,125,120)
+y<-c(130,118,125,120,118,125,130,120)
+
+wilcoxon(x,y)
+# Conferindo o resultado
+wilcox.test(x,y)
+```
+
+```{r, echo=FALSE}
+boxplot(x,y,col="gray")
+```
+
+Desse modo não se rejeita $H_0$, ou seja, não há diferenças entre o estado normal e tenso na pressão sanguínea
+
+**Exercício 15**
+------------------------------------------------------
+***
+Teste Wilcoxon
+
+$H_0: d_{50} = 0$ Não há diferenças entre o peso dos gêmeos 
+
+$H_1: d_{50} > 0$ O primeiro a nascer se desenvolve mais
+
+Sendo $n<25$
+```{r,warning=FALSE}
+x<-c(0.72,0.47,0.51,0.59,0.97,0.87,0.36,0.72,0.65,0.48,0.93,0.87,0.81) 
+y<-c(0.43,0.33,0.49,0.59,0.85,0.80,0.40,0.74,0.62,0.46,0.70,0.78,0.78)
+
+wilcoxon(x,y)
+# Conferindo o resultado
+wilcox.test(x,y,paired = T, alternative = "greater",correct = F)
+```
+
+```{r, echo=FALSE}
+boxplot(x,y,col="gray")
+```
+
+Desse modo se rejeita $H_0$, ou seja, há diferenças entre o peso dos gêmeos, nesse caso o primeiro a nascer se desenvolve mais. 
+
+**Exercício 16**
+------------------------------------------------------
+***
+Teste Wilcoxon
+
+
+$H_0: d_{50} = 0$ Não há diferenças entre o peso dos gêmeos
+
+$H_1: d_{50} > 0$ Existe diferenças entre o peso dos gêmeos
+
+Sendo $n>25$
+```{r,warning=FALSE}
+x<-c(5.1,4.2,3.3,6,7.1,3.2,2.8,1.4,0.8,5.6,3.8,4.7,6.2,5.4,
+     1.2,2.2,1.9,5.4,5.5,5.2,3.8,4.2,1.8,2.6,4.3,1.4)
+y<-c(5.8,4.7,6.1,7.4,6.5,3.2,4.5,3.5,4,5.5,3.9,4.5,5,5.4,6,5,
+     2.2,1.8,5.2,6,4.5,4.7,5.1,2.9,2.6,6.5)
+
+wilcoxon(x,y)
+# Conferindo o resultado
+wilcox.test(x,y,paired = T)
+```
+
+```{r, echo=FALSE}
+boxplot(x,y,col="gray")
+```
+
+Dessa forma, rejeita-se $H_0$, ou seja, não há diferenças entre o peso dos gêmeos
+
+**Exercício 17**
+------------------------------------------------------
+***
+Teste Wilcoxon
+
+$H_0: d_{50} = 0$ Não ocorreram melhoras
+
+$H_1: d_{50} < 0$ Ocorreram melhoras
+
+Sendo $n<25$
+```{r,warning=FALSE}
+x<-c(6,1,14,2,23,18,14,9,14,2,3,17,6)
+y<-c(7,1,20,2,9,13,2,4,14,4,4,15,5)
+
+wilcoxon(x,y)
+# Conferindo o resultado
+wilcox.test(x,y,paired = T)
+```
+
+```{r, echo=FALSE}
+boxplot(x,y,col="gray")
+```
+
+Dessa forma, não é possível rejeitar $H_0$, ou seja, não ocorreram melhoras nos escores de depressão.
